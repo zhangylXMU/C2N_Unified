@@ -1,0 +1,37 @@
+{
+  "schema_version": "1.0",
+  "case_id": "demo-600mw-subcritical-htgr",
+  "option_id": "htgr-solar-salt-4mod",
+  "technical": {
+    "net_mw": 558.136,
+    "gross_mw": 589.84,
+    "q_core_mwth": 1000.0,
+    "n_modules": 4,
+    "module_power_mwth": 250.0,
+    "hx_areas_m2": {
+      "SH": 5618.83,
+      "EV": 7114.83,
+      "EC": 20771.67,
+      "RH": 13026.46,
+      "IHX": 14110.71
+    },
+    "salt_mass_t": 8561.996,
+    "salt_volume_m3": 9460.162,
+    "storage_capacity_mwh": 945.276,
+    "replacement_ratio": 1.0,
+    "eta_cycle_pct": 44.077,
+    "feasibility_status": "feasible"
+  },
+  "assumptions": {
+    "discount_rate": 0.06,
+    "lifetime_years": 40,
+    "construction_years": 4.0,
+    "capacity_factor": 0.8,
+    "electricity_price_cny_per_mwh": 400.0,
+    "coal_price_cny_per_t": 700.0,
+    "co2_price_cny_per_t": 0.0,
+    "o_and_m_pct_of_capex": 0.03,
+    "contingency_pct": 0.1,
+    "cost_model_id": "CN-2026-v1"
+  }
+}

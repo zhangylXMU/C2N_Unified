@@ -1,0 +1,17 @@
+# C2N 统一内核 —— 运行依赖
+#
+# 必需的只有一个：CoolProp（水/蒸汽/氦的物性）。
+# Python >= 3.11（用了标准库 tomllib 读输入卡）。
+#
+#     python -m pip install -r requirements.txt
+#
+# 说明：本仓库的基准数字（见 tools/offline_selfcheck.py、tests/）在
+# CoolProp 8.0.0 上标定。CoolProp 6.6 ~ 8.x 的物性差异在 0.01 % 量级，
+# 落在测试容差内；换大版本后请先跑一遍 tests，再改基准值。
+CoolProp>=6.6,<9
+
+# ---------------------------------------------------------------------------
+# 可选：只有 `python run.py` 生成一页纸框图（scheme.png）时才需要。
+# 内核本身（assess / 报告 / CSV / JSON）不 import matplotlib。
+# ---------------------------------------------------------------------------
+# matplotlib>=3.8

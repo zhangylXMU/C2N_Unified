@@ -1,0 +1,21 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# 虚拟环境
+.venv/
+venv/
+
+# 运行产物（results/demo 是示例输出，故意保留）
+results/*
+!results/demo/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+Thumbs.db
+
+# 测试临时目录
+tests/_fleet_tmp/

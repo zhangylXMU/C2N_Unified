@@ -1,0 +1,62 @@
+name: ci
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  test:
+    name: tests + self-check (py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: 安装依赖
+        run: |
+          python -m pip install --upgrade pip
+          # CoolProp 固定在标定基准数字时的版本，保证回归可比
+          python -m pip install "CoolProp==8.0.0" "matplotlib>=3.8"
+
+      - name: 配置层测试（不需要 CoolProp，先单独跑一遍确认隔离）
+        run: python tests/run_tests.py config
+
+      - name: 全量测试（含物理回归与跨实现对照）
+        run: python tests/run_tests.py
+
+      - name: 结构自检 + 基准数字
+        run: python tools/offline_selfcheck.py
+
+      - name: 命令行冒烟（两种机型各跑一遍）
+        run: |
+          python run.py --config config/subcritical_600mw.toml --out /tmp/sub
+          python run.py --config config/supercritical_1000mw.toml --out /tmp/sc
+          test -s /tmp/sub/report.md
+          test -s /tmp/sc/report.md
+          test -s /tmp/sub/summary.json
+
+      - name: 依赖方向守卫（内核不得依赖前端）
+        run: |
+          set -e
+          ! grep -rn --include="*.py" -E "^[[:space:]]*(from|import)[[:space:]]+C2N_Web([.[:space:]]|$)" c2n
+          echo "OK: the kernel does not import the web application"
+
+      - name: 上传示例报告
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: report-py${{ matrix.python-version }}
+          path: |
+            /tmp/sub/report.md
+            /tmp/sc/report.md
+          if-no-files-found: ignore

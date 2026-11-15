@@ -1,0 +1,11 @@
+# 开发/CI 依赖（运行内核本身不需要这些）
+#
+#     python -m pip install -r requirements-dev.txt
+#
+-r requirements.txt
+
+# 测试用的是自带 runner（python tests/run_tests.py），pytest 只是可选。
+pytest>=8.0
+
+# 画框图（run.py 默认会尝试；缺失时自动跳过）
+matplotlib>=3.8

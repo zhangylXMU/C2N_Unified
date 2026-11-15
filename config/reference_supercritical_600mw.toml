@@ -1,0 +1,99 @@
+# =============================================================================
+# 验证卡：复现 C2N_HTGR_Salt_SCPP（完整 TESPy 模型）的 100 % 设计点
+#
+# 用法：python run.py --config config/scpp_reference.toml
+#
+# 这张卡不是给业主用的，是**回归验证**用的：所有边界条件都取自
+# `../C2N_HTGR_Salt_SCPP/results/report.md` 的 100 % 工况，用来检查
+# 两个工具算出的四段热负荷、盐温、kA、净电是否一致。
+#
+# 关键对齐项（与完整模型的差异都是**记账口径**，不是物理）：
+#   * gross_basis = "shaft"：参考模型的 600 MW 是轴功率（各汽轮机之和），
+#     它自己再乘 η_g·η_m；本工具默认 gross_basis = "generator"。
+#   * turbine_island_aux_mw = 15.30：参考模型扣了给水泵 14.58 + 凝结水泵 0.72，
+#     本工具把这两项归为"汽轮机岛辅机"。
+#   * salt.optimise_split = false + main_branch_fraction = 0.804：
+#     参考模型固定支路份额与充热盐流量，本工具默认会反解份额。
+#   * salt.min_pinch_k = 5.15：参考模型的瓶颈端差（再热器冷端）。
+# =============================================================================
+
+[plant]
+name = "参照卡：C2N_HTGR_Salt_SCPP 100 % 设计点"
+
+gross_power_mw = 600.0098         # 参考模型各汽轮机功率之和（轴功率）
+gross_basis = "shaft"             # 所以这里要乘 η_g·η_m
+
+main_steam_p_bar = 242.0
+main_steam_t_c = 566.0
+main_steam_m_kgs = 447.0
+
+boiler_p_bar = 250.0              # 参考模型 steam_generator_p_bar
+wall_outlet_t_c = 414.9           # 参考模型 W36（= 拟临界 385.0 + 30）
+economizer_outlet_t_c = 354.9     # 参考模型 W35（= 拟临界 385.0 − 30）
+
+cold_reheat_p_bar = 44.0
+cold_reheat_t_c = 311.58          # 参考模型 W7
+reheat_m_kgs = 381.4              # 参考模型 W7 流量
+reheater_pressure_ratio = 0.92
+hot_reheat_t_c = 566.0
+
+feedwater_p_bar = 250.0
+feedwater_t_c = 275.73            # 参考模型 W34
+
+generator_eta = 0.988
+mechanical_eta = 0.995
+
+turbine_island_aux_mw = 15.30     # 给水泵 14.58 + 凝结水泵 0.72
+boiler_aux_mw = 0.0               # 参考模型没有锅炉辅机
+
+[reactor]
+module_power_mwth = 250.0
+n_modules = 4
+t_hot_c = 750.0
+t_ihx_out_c = 340.0
+p_cold_bar = 70.0
+core_pr = 0.98
+ihx_pr = 0.98
+eta_circulator = 0.85
+eta_circulator_motor = 1.0        # 参考模型直接扣风机轴功，为对齐取 1.0
+
+[salt]
+t_hot_c = 620.0
+optimise_split = false            # 参考模型固定份额
+main_branch_fraction = 0.804
+min_pinch_k = 5.15                # 参考模型的瓶颈端差（再热器冷端）
+p_bar = 3.0
+pump_dp_bar = 2.0
+eta_pump = 0.80
+eta_pump_motor = 0.97
+ua_margin = 1.0
+u_superheater_w_m2k = 1000.0      # 与参考模型 [sizing] 一致
+u_evaporator_w_m2k = 2000.0
+u_economizer_w_m2k = 1300.0
+u_reheater_w_m2k = 1000.0
+u_he_salt_w_m2k = 800.0
+freezing_margin_k = 20.0
+t_warn_freeze_c = 220.0
+t_warn_margin_c = 290.0
+
+[storage]
+hours = 4.0
+
+[sizing]
+tube_od_mm = 25.0
+tube_wall_mm = 2.0
+tube_length_m = 12.0
+pitch_ratio = 1.25
+shell_clearance_m = 0.35
+max_shell_id_m = 4.0
+tank_height_to_diameter = 0.4
+ullage = 0.12
+salt_inventory_margin = 0.10
+
+[partload]
+load_points = [1.0, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3]
+eta_ratio = [1.000, 0.993, 0.983, 0.970, 0.954, 0.935, 0.909, 0.876]
+sliding_exponent = 0.90
+sliding_floor = 0.70
+turbine_aux_fixed_fraction = 0.40
+feedwater_t_c = [275.73, 273.0, 270.0, 266.0, 261.0, 255.0, 247.0, 237.0]

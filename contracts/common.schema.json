@@ -1,0 +1,112 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2n.dev/schemas/1.0/common.schema.json",
+  "title": "C2N common definitions",
+  "description": "Shared building blocks for CaseSpec, TechnicalAssessment and Economics contracts. Units are fixed: pressure in bar (absolute), temperature in degC, power in MW, mass flow in kg/s, energy in MWh, money in CNY.",
+  "type": "object",
+  "$defs": {
+    "Mode": {
+      "type": "string",
+      "enum": ["boiler_replacement", "full_replacement", "partial_replacement"],
+      "description": "Assessment mode. boiler_replacement keeps the existing turbine; full_replacement selects a new unit from the catalog; partial_replacement splits the heat demand between nuclear and coal."
+    },
+    "TurbineClass": {
+      "type": "string",
+      "enum": ["subcritical", "supercritical", "ultra_supercritical"],
+      "description": "Existing turbine class. Drives the steam-side specification (drum vs once-through)."
+    },
+    "ReactorTechnology": {
+      "type": "string",
+      "enum": ["PWR", "HTGR", "SFR", "MSR"],
+      "description": "PWR = pressurised water reactor; HTGR = high-temperature gas-cooled reactor; SFR = sodium-cooled fast reactor; MSR = molten salt reactor."
+    },
+    "FluidId": {
+      "type": "string",
+      "enum": ["solar_salt", "advanced_nitrate", "chloride_salt", "flibe", "flinak", "liquid_sodium", "helium", "water_steam"],
+      "description": "Intermediate-loop or primary coolant. New fluids are added to the catalog, not to this enum's semantics."
+    },
+    "FeasibilityCode": {
+      "type": "string",
+      "enum": [
+        "OK",
+        "PRESSURE_MISMATCH",
+        "TEMPERATURE_MISMATCH",
+        "FLUID_LIMIT",
+        "MATERIAL_LIMIT",
+        "TRL_LOW",
+        "TURBINE_NOT_REUSABLE",
+        "DATA_INSUFFICIENT",
+        "SOURCE_CATALOG"
+      ],
+      "description": "Machine-readable reason. SOURCE_CATALOG marks full-replacement options sized from catalog data rather than from the thermal kernel."
+    },
+    "Check": {
+      "type": "object",
+      "description": "One verification item. Rendered as traffic light in the UI and as a sentence in the report.",
+      "required": ["id", "ok"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "description": "e.g. pinch, freeze_margin, energy_closure, net_power_positive" },
+        "value": { "type": "number" },
+        "limit": { "type": "number" },
+        "unit": { "type": "string" },
+        "ok": { "type": "boolean" },
+        "message": { "type": "string" }
+      }
+    },
+    "Provenance": {
+      "type": "object",
+      "description": "Everything needed to reproduce or audit a result.",
+      "required": ["kernel", "kernel_version", "model_card_id"],
+      "additionalProperties": false,
+      "properties": {
+        "kernel": { "type": "string", "examples": ["c2n-screening", "c2n-reference", "c2n-economics"] },
+        "kernel_version": { "type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$" },
+        "model_card_id": { "type": "string" },
+        "input_hash": { "type": "string", "description": "sha256 of the canonicalised input; lets a published result be re-run." },
+        "computed_at": { "type": "string", "format": "date-time" },
+        "runtime_ms": { "type": "integer", "minimum": 0 }
+      }
+    },
+    "Assumptions": {
+      "type": "object",
+      "description": "Financial and operational assumptions. Kept separate from technical input so that economics can be re-run without recomputing physics.",
+      "additionalProperties": false,
+      "properties": {
+        "discount_rate": { "type": "number", "minimum": 0, "maximum": 0.5, "description": "Real discount rate, fraction per year." },
+        "lifetime_years": { "type": "integer", "minimum": 1, "maximum": 80 },
+        "construction_years": { "type": "number", "minimum": 0, "maximum": 15 },
+        "capacity_factor": { "type": "number", "minimum": 0, "maximum": 1 },
+        "electricity_price_cny_per_mwh": { "type": "number", "minimum": 0 },
+        "coal_price_cny_per_t": { "type": "number", "minimum": 0 },
+        "co2_price_cny_per_t": { "type": "number", "minimum": 0 },
+        "o_and_m_pct_of_capex": { "type": "number", "minimum": 0, "maximum": 0.2 },
+        "contingency_pct": { "type": "number", "minimum": 0, "maximum": 0.5 },
+        "cost_model_id": { "type": "string", "examples": ["CN-2026-v1"] }
+      }
+    },
+    "CostItem": {
+      "type": "object",
+      "required": ["item", "cny"],
+      "additionalProperties": false,
+      "properties": {
+        "item": { "type": "string" },
+        "cny": { "type": "number", "minimum": 0 },
+        "basis": { "type": "string", "description": "How the number was derived, e.g. '元/kWth x 1000 MWth'." },
+        "source": { "type": "string" }
+      }
+    },
+    "SensorRange": {
+      "type": "object",
+      "description": "A value with an explicit uncertainty band. Used wherever the model is honest about precision.",
+      "required": ["value"],
+      "additionalProperties": false,
+      "properties": {
+        "value": { "type": "number" },
+        "low": { "type": "number" },
+        "high": { "type": "number" },
+        "unit": { "type": "string" }
+      }
+    }
+  }
+}

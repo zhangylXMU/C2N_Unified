@@ -1,0 +1,800 @@
+{
+  "ok": true,
+  "case_id": "subcritical_600mw",
+  "generated_at": "2026-11-15T13:42:55+08:00",
+  "input": {
+    "plant": {
+      "name": "600 MW 亚临界再热机组",
+      "turbine_class": "subcritical",
+      "gross_power_mw": 589.84,
+      "gross_basis": "generator",
+      "main_steam_p_bar": 166.7,
+      "main_steam_t_c": 538.0,
+      "main_steam_m_kgs": 479.913,
+      "drum_p_bar": 185.0,
+      "economizer_subcooling_k": 5.0,
+      "boiler_p_bar": null,
+      "wall_outlet_t_c": null,
+      "economizer_outlet_t_c": null,
+      "cold_reheat_p_bar": 36.0,
+      "cold_reheat_t_c": 314.936,
+      "reheat_m_kgs": 401.039,
+      "reheater_pressure_ratio": 0.889,
+      "hot_reheat_t_c": 538.0,
+      "feedwater_p_bar": 200.0,
+      "feedwater_t_c": 273.585,
+      "generator_eta": 0.988,
+      "mechanical_eta": 0.995,
+      "turbine_island_aux_mw": 26.5,
+      "boiler_aux_mw": 12.0,
+      "p_boiler_bar": 185.0
+    },
+    "reactor": {
+      "module_power_mwth": 250.0,
+      "n_modules": 4,
+      "t_hot_c": 750.0,
+      "t_ihx_out_c": 340.0,
+      "p_cold_bar": 70.0,
+      "core_pr": 0.98,
+      "ihx_pr": 0.98,
+      "eta_circulator": 0.85,
+      "eta_circulator_motor": 0.97
+    },
+    "salt": {
+      "t_hot_c": 565.0,
+      "fluid": "solar_salt",
+      "main_branch_fraction": 0.825,
+      "optimise_split": true,
+      "min_pinch_k": 5.0,
+      "p_bar": 3.0,
+      "pump_dp_bar": 2.0,
+      "eta_pump": 0.8,
+      "eta_pump_motor": 0.97,
+      "ua_margin": 1.0,
+      "u_superheater_w_m2k": 1000.0,
+      "u_evaporator_w_m2k": 2000.0,
+      "u_economizer_w_m2k": 1300.0,
+      "u_reheater_w_m2k": 1000.0,
+      "u_he_salt_w_m2k": 800.0,
+      "freezing_margin_k": 20.0,
+      "t_warn_freeze_c": 220.0,
+      "t_warn_margin_c": 290.0
+    },
+    "storage": {
+      "hours": 4.0
+    },
+    "sizing": {
+      "tube_od_mm": 25.0,
+      "tube_wall_mm": 2.0,
+      "tube_length_m": 12.0,
+      "pitch_ratio": 1.25,
+      "shell_clearance_m": 0.35,
+      "max_shell_id_m": 4.0,
+      "tank_height_to_diameter": 0.4,
+      "ullage": 0.12,
+      "salt_inventory_margin": 0.1
+    },
+    "partload": {
+      "load_points": [
+        1.0,
+        0.9,
+        0.8,
+        0.7,
+        0.6,
+        0.5,
+        0.4,
+        0.3
+      ],
+      "eta_ratio": [
+        1.0,
+        0.992,
+        0.981,
+        0.967,
+        0.95,
+        0.93,
+        0.903,
+        0.87
+      ],
+      "sliding_exponent": 0.9,
+      "sliding_floor": 0.7,
+      "turbine_aux_fixed_fraction": 0.4,
+      "feedwater_t_c": [
+        273.6,
+        271.0,
+        267.5,
+        263.0,
+        257.5,
+        251.0,
+        243.0,
+        233.5
+      ]
+    }
+  },
+  "technical": {
+    "schema_version": "1.0",
+    "case_id": "subcritical_600mw",
+    "mode": "boiler_replacement",
+    "options": [
+      {
+        "option_id": "htgr-solar_salt-4mod",
+        "label": "高温气冷堆 ×4 + 太阳盐双罐储热 + 亚临界汽轮机",
+        "reactor": {
+          "technology": "HTGR",
+          "n_modules": 4
+        },
+        "intermediate_loop": {
+          "fluid": "solar_salt",
+          "t_hot_c": 565.0,
+          "t_cold_c": 303.19
+        },
+        "feasibility": {
+          "status": "feasible",
+          "code": "OK",
+          "blocking_issues": [],
+          "warnings": []
+        },
+        "sizing": {
+          "n_modules": 4,
+          "module_power_mwth": 250.0,
+          "q_core_mwth": 1000.0,
+          "q_ihx_mw": 1029.96,
+          "salt": {
+            "fluid": "solar_salt",
+            "mass_t": 8568.8,
+            "volume_m3": 9467.8,
+            "m_discharge_kgs": 3187.23,
+            "m_charge_kgs": 2592.18,
+            "t_hot_c": 565.0,
+            "t_cold_c": 303.19,
+            "min_pinch_k": 5.0,
+            "binding_section": "EC"
+          },
+          "storage": {
+            "capacity_mwh": 945.7,
+            "hours": 4.0,
+            "mode": "discharging",
+            "net_power_mw": -236.43
+          },
+          "hx": [
+            {
+              "id": "SH",
+              "q_mw": 436.7389,
+              "ka_mw_k": 5.6176,
+              "ka_selected_mw_k": 5.6176,
+              "area_m2": 5617.6,
+              "u_w_m2k": 1000.0,
+              "dt_min_k": 27.0,
+              "dt_hot_end_k": 27.0,
+              "dt_cold_end_k": 96.8665,
+              "lmtd_k": 77.7446
+            },
+            {
+              "id": "EV",
+              "q_mw": 380.9543,
+              "ka_mw_k": 14.1293,
+              "ka_selected_mw_k": 14.1293,
+              "area_m2": 7064.7,
+              "u_w_m2k": 2000.0,
+              "dt_min_k": 5.7925,
+              "dt_hot_end_k": 96.8665,
+              "dt_cold_end_k": 5.7925,
+              "lmtd_k": 26.962
+            },
+            {
+              "id": "EC",
+              "q_mw": 237.7105,
+              "ka_mw_k": 27.1865,
+              "ka_selected_mw_k": 27.1865,
+              "area_m2": 20912.7,
+              "u_w_m2k": 1300.0,
+              "dt_min_k": 5.0,
+              "dt_hot_end_k": 5.7925,
+              "dt_cold_end_k": 25.9796,
+              "lmtd_k": 8.7437
+            },
+            {
+              "id": "RH",
+              "q_mw": 210.9874,
+              "ka_mw_k": 13.0089,
+              "ka_selected_mw_k": 13.0089,
+              "area_m2": 13008.9,
+              "u_w_m2k": 1000.0,
+              "dt_min_k": 5.0232,
+              "dt_hot_end_k": 27.0,
+              "dt_cold_end_k": 5.0232,
+              "lmtd_k": 16.2188
+            },
+            {
+              "id": "IHX",
+              "q_mw": 1029.9563,
+              "ka_mw_k": 11.2978,
+              "ka_selected_mw_k": 11.2978,
+              "area_m2": 14122.2,
+              "u_w_m2k": 800.0,
+              "dt_min_k": 36.8051,
+              "dt_hot_end_k": 185.0,
+              "dt_cold_end_k": 36.8051,
+              "lmtd_k": 91.1646
+            }
+          ]
+        },
+        "performance": {
+          "gross_mw": 589.84,
+          "net_mw": 531.64,
+          "aux_circulator_mw": 30.88,
+          "aux_salt_pump_mw": 0.82,
+          "aux_turbine_island_mw": 26.5,
+          "net_power_delta_mw": -19.7,
+          "eta_cycle_pct": 41.98,
+          "sustainable_load_pct": 81.33,
+          "self_sufficient_modules": 5
+        },
+        "checks": [
+          {
+            "id": "pinch",
+            "ok": true,
+            "value": 4.999971,
+            "limit": 5.0,
+            "unit": "K",
+            "message": "四台换热器最小端差（沿程）：5.00 K @ 省煤器（判据 ≥ 5.0 K）"
+          },
+          {
+            "id": "freeze_margin",
+            "ok": true,
+            "value": 65.194934,
+            "limit": 20.0,
+            "unit": "K",
+            "message": "冷盐与凝固点裕量：65.2 K（判据 ≥ 20.0 K（即 ≥ 258 °C））"
+          },
+          {
+            "id": "salt_decomposition",
+            "ok": true,
+            "value": 565.0,
+            "limit": 600.0,
+            "unit": "°C",
+            "message": "热盐分解温度：565 °C（判据 ≤ 600 °C（太阳盐））"
+          },
+          {
+            "id": "ihx_cold_end",
+            "ok": true,
+            "value": 36.805066,
+            "limit": 5.0,
+            "unit": "K",
+            "message": "IHX 冷端温差：36.8 K（判据 ≥ 5.0 K）"
+          },
+          {
+            "id": "temperature_crossing",
+            "ok": true,
+            "value": 4.999971,
+            "limit": 0.0,
+            "unit": "K",
+            "message": "各换热段沿程温差：全部为正（判据 无温度交叉）"
+          },
+          {
+            "id": "energy_closure",
+            "ok": true,
+            "value": 0.0,
+            "limit": 1e-06,
+            "unit": "MW",
+            "message": "100 % 工况热平衡：1029.96 = 1266.39 -236.43（判据 IHX = 汽侧吸热 + 储罐放热）"
+          },
+          {
+            "id": "net_power_positive",
+            "ok": true,
+            "value": 531.636091,
+            "limit": 0.0,
+            "unit": "MW",
+            "message": "净电为正：531.64 MW（判据 > 0）"
+          }
+        ],
+        "narrative": {
+          "headline": "4 个 250 MWth 模块（1000 MWth）可覆盖 590 MW 亚临界机组的锅炉侧热量；需太阳盐 9,426 t、换热面积 46,604 m²，净电 531.6 MW（同口径变化 -19.7 MW）",
+          "details": [
+            "额定工况储罐净放热 236 MW，4 h 需 946 MWh",
+            "四台换热器总热负荷 1266.4 MW，端差瓶颈 省煤器（5.0 K）",
+            "可持续负荷 81.3 %；若要求长期满发需 5 个模块（1250 MWth）"
+          ]
+        },
+        "provenance": {
+          "kernel": "c2n-screening",
+          "kernel_version": "2.0.0",
+          "model_card_id": "MC-C2N-001",
+          "input_hash": "sha256:d1b4c16a7466588d3c25dbfeeaeabfe35e18a23fa0157dd15e321cb63e21f93a",
+          "computed_at": "2026-11-15T13:42:55+08:00",
+          "runtime_ms": 109
+        }
+      }
+    ],
+    "recommendation": null,
+    "warnings": [],
+    "provenance": {
+      "kernel": "c2n-screening",
+      "kernel_version": "2.0.0",
+      "model_card_id": "MC-C2N-001",
+      "input_hash": "sha256:d1b4c16a7466588d3c25dbfeeaeabfe35e18a23fa0157dd15e321cb63e21f93a",
+      "computed_at": "2026-11-15T13:42:55+08:00",
+      "runtime_ms": 109
+    }
+  },
+  "details": {
+    "sections": [
+      {
+        "id": "SH",
+        "label": "过热器",
+        "q_mw": 436.7389,
+        "ka_mw_k": 5.6176,
+        "ka_selected_mw_k": 5.6176,
+        "area_m2": 5617.6,
+        "u_w_m2k": 1000.0,
+        "dt_min_k": 27.0,
+        "dt_hot_end_k": 27.0,
+        "dt_cold_end_k": 96.8665,
+        "lmtd_k": 77.7446
+      },
+      {
+        "id": "EV",
+        "label": "蒸发器",
+        "q_mw": 380.9543,
+        "ka_mw_k": 14.1293,
+        "ka_selected_mw_k": 14.1293,
+        "area_m2": 7064.7,
+        "u_w_m2k": 2000.0,
+        "dt_min_k": 5.7925,
+        "dt_hot_end_k": 96.8665,
+        "dt_cold_end_k": 5.7925,
+        "lmtd_k": 26.962
+      },
+      {
+        "id": "EC",
+        "label": "省煤器",
+        "q_mw": 237.7105,
+        "ka_mw_k": 27.1865,
+        "ka_selected_mw_k": 27.1865,
+        "area_m2": 20912.7,
+        "u_w_m2k": 1300.0,
+        "dt_min_k": 5.0,
+        "dt_hot_end_k": 5.7925,
+        "dt_cold_end_k": 25.9796,
+        "lmtd_k": 8.7437
+      },
+      {
+        "id": "RH",
+        "label": "再热器",
+        "q_mw": 210.9874,
+        "ka_mw_k": 13.0089,
+        "ka_selected_mw_k": 13.0089,
+        "area_m2": 13008.9,
+        "u_w_m2k": 1000.0,
+        "dt_min_k": 5.0232,
+        "dt_hot_end_k": 27.0,
+        "dt_cold_end_k": 5.0232,
+        "lmtd_k": 16.2188
+      },
+      {
+        "id": "IHX",
+        "label": "氦-盐中间换热器",
+        "q_mw": 1029.9563,
+        "ka_mw_k": 11.2978,
+        "ka_selected_mw_k": 11.2978,
+        "area_m2": 14122.2,
+        "u_w_m2k": 800.0,
+        "dt_min_k": 36.8051,
+        "dt_hot_end_k": 185.0,
+        "dt_cold_end_k": 36.8051,
+        "lmtd_k": 91.1646
+      }
+    ],
+    "part_load": [
+      {
+        "load_pct": 100.0,
+        "m_main_kgs": 479.91,
+        "p_main_bar": 166.7,
+        "p_boiler_bar": 185.0,
+        "t_fw_c": 273.6,
+        "q_steam_mw": 1266.4,
+        "gross_mw": 589.84,
+        "aux_turbine_mw": 26.5,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.82,
+        "net_mw": 531.64,
+        "q_net_mw": -236.43,
+        "storage_hours": 4.0,
+        "eta_cycle_pct": 41.98,
+        "sliding": true,
+        "t_salt_min_c": 299.56,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 90.0,
+        "m_main_kgs": 431.46,
+        "p_main_bar": 151.47,
+        "p_boiler_bar": 168.1,
+        "t_fw_c": 271.0,
+        "q_steam_mw": 1148.9,
+        "gross_mw": 530.86,
+        "aux_turbine_mw": 24.91,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.78,
+        "net_mw": 474.29,
+        "q_net_mw": -118.99,
+        "storage_hours": 7.95,
+        "eta_cycle_pct": 41.28,
+        "sliding": true,
+        "t_salt_min_c": 298.4,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 80.0,
+        "m_main_kgs": 383.73,
+        "p_main_bar": 136.31,
+        "p_boiler_bar": 151.27,
+        "t_fw_c": 267.5,
+        "q_steam_mw": 1032.7,
+        "gross_mw": 471.87,
+        "aux_turbine_mw": 23.32,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.74,
+        "net_mw": 416.93,
+        "q_net_mw": -2.78,
+        "storage_hours": 339.62,
+        "eta_cycle_pct": 40.37,
+        "sliding": true,
+        "t_salt_min_c": 297.21,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 70.0,
+        "m_main_kgs": 336.47,
+        "p_main_bar": 121.1,
+        "p_boiler_bar": 134.39,
+        "t_fw_c": 263.0,
+        "q_steam_mw": 916.7,
+        "gross_mw": 412.89,
+        "aux_turbine_mw": 21.73,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.7,
+        "net_mw": 359.58,
+        "q_net_mw": 113.23,
+        "storage_hours": 8.35,
+        "eta_cycle_pct": 39.22,
+        "sliding": true,
+        "t_salt_min_c": 295.97,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 60.0,
+        "m_main_kgs": 290.71,
+        "p_main_bar": 120.93,
+        "p_boiler_bar": 134.2,
+        "t_fw_c": 257.5,
+        "q_steam_mw": 799.8,
+        "gross_mw": 353.9,
+        "aux_turbine_mw": 20.14,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.65,
+        "net_mw": 302.23,
+        "q_net_mw": 230.13,
+        "storage_hours": 4.11,
+        "eta_cycle_pct": 37.79,
+        "sliding": false,
+        "t_salt_min_c": 295.47,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 50.0,
+        "m_main_kgs": 244.7,
+        "p_main_bar": 120.93,
+        "p_boiler_bar": 134.2,
+        "t_fw_c": 251.0,
+        "q_steam_mw": 680.9,
+        "gross_mw": 294.92,
+        "aux_turbine_mw": 18.55,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.61,
+        "net_mw": 244.87,
+        "q_net_mw": 349.11,
+        "storage_hours": 2.71,
+        "eta_cycle_pct": 35.97,
+        "sliding": false,
+        "t_salt_min_c": 294.91,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 40.0,
+        "m_main_kgs": 198.92,
+        "p_main_bar": 120.93,
+        "p_boiler_bar": 134.2,
+        "t_fw_c": 243.0,
+        "q_steam_mw": 561.0,
+        "gross_mw": 235.94,
+        "aux_turbine_mw": 16.96,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.57,
+        "net_mw": 187.52,
+        "q_net_mw": 468.99,
+        "storage_hours": 2.02,
+        "eta_cycle_pct": 33.43,
+        "sliding": false,
+        "t_salt_min_c": 294.25,
+        "salt_warnings": []
+      },
+      {
+        "load_pct": 30.0,
+        "m_main_kgs": 152.46,
+        "p_main_bar": 120.93,
+        "p_boiler_bar": 134.2,
+        "t_fw_c": 233.5,
+        "q_steam_mw": 436.7,
+        "gross_mw": 176.95,
+        "aux_turbine_mw": 15.37,
+        "aux_circulator_mw": 30.88,
+        "aux_pump_mw": 0.52,
+        "net_mw": 130.17,
+        "q_net_mw": 593.27,
+        "storage_hours": 1.59,
+        "eta_cycle_pct": 29.81,
+        "sliding": false,
+        "t_salt_min_c": 293.51,
+        "salt_warnings": []
+      }
+    ],
+    "states": [
+      {
+        "id": "H1",
+        "node": "堆芯出口",
+        "fluid": "氦气",
+        "m_kgs": 483.979,
+        "p_bar": 68.6,
+        "T_degC": 750.0,
+        "h_kJkg": 5338.49,
+        "note": ""
+      },
+      {
+        "id": "H2",
+        "node": "IHX 氦侧出口（风机进口）",
+        "fluid": "氦气",
+        "m_kgs": 483.979,
+        "p_bar": 67.228,
+        "T_degC": 340.0,
+        "h_kJkg": 3210.39,
+        "note": "风机压比 1.0412"
+      },
+      {
+        "id": "H3",
+        "node": "氦风机出口（堆芯进口）",
+        "fluid": "氦气",
+        "m_kgs": 483.979,
+        "p_bar": 70.0,
+        "T_degC": 351.76,
+        "h_kJkg": 3272.29,
+        "note": "风机轴功 30.0 MW"
+      },
+      {
+        "id": "S1",
+        "node": "IHX 盐侧出口",
+        "fluid": "太阳盐",
+        "m_kgs": 2592.178,
+        "p_bar": 3.0,
+        "T_degC": 565.0,
+        "h_kJkg": 842.75,
+        "note": "充热回路"
+      },
+      {
+        "id": "S2",
+        "node": "热罐出口 / 热盐总管",
+        "fluid": "太阳盐",
+        "m_kgs": 3187.234,
+        "p_bar": 3.0,
+        "T_degC": 565.0,
+        "h_kJkg": 842.75,
+        "note": "放热回路起点"
+      },
+      {
+        "id": "S3",
+        "node": "过热器出口",
+        "fluid": "太阳盐",
+        "m_kgs": 2620.434,
+        "p_bar": 3.0,
+        "T_degC": 456.13,
+        "h_kJkg": 676.08,
+        "note": "主支路"
+      },
+      {
+        "id": "S4",
+        "node": "蒸发器出口",
+        "fluid": "太阳盐",
+        "m_kgs": 2620.434,
+        "p_bar": 3.0,
+        "T_degC": 360.05,
+        "h_kJkg": 530.7,
+        "note": "主支路"
+      },
+      {
+        "id": "S5",
+        "node": "省煤器出口",
+        "fluid": "太阳盐",
+        "m_kgs": 2620.434,
+        "p_bar": 3.0,
+        "T_degC": 299.56,
+        "h_kJkg": 439.99,
+        "note": "主支路回盐"
+      },
+      {
+        "id": "S6",
+        "node": "再热器出口",
+        "fluid": "太阳盐",
+        "m_kgs": 566.8,
+        "p_bar": 3.0,
+        "T_degC": 319.96,
+        "h_kJkg": 470.51,
+        "note": "再热支路回盐"
+      },
+      {
+        "id": "S7",
+        "node": "冷盐总管（混合）",
+        "fluid": "太阳盐",
+        "m_kgs": 3187.234,
+        "p_bar": 3.0,
+        "T_degC": 303.19,
+        "h_kJkg": 445.42,
+        "note": "主支路 2620 + 再热支路 567 kg/s"
+      },
+      {
+        "id": "S8",
+        "node": "冷罐出口 → IHX",
+        "fluid": "太阳盐",
+        "m_kgs": 2592.178,
+        "p_bar": 3.0,
+        "T_degC": 303.19,
+        "h_kJkg": 445.42,
+        "note": "充热回路起点"
+      },
+      {
+        "id": "W1",
+        "node": "给水（省煤器进口）",
+        "fluid": "水",
+        "m_kgs": 479.913,
+        "p_bar": 200.0,
+        "T_degC": 273.58,
+        "h_kJkg": 1199.73,
+        "note": ""
+      },
+      {
+        "id": "W2",
+        "node": "省煤器出口",
+        "fluid": "水",
+        "m_kgs": 479.913,
+        "p_bar": 185.0,
+        "T_degC": 354.26,
+        "h_kJkg": 1695.05,
+        "note": "过冷 5.0 K"
+      },
+      {
+        "id": "W3",
+        "node": "蒸发器出口（饱和蒸汽）",
+        "fluid": "蒸汽",
+        "m_kgs": 479.913,
+        "p_bar": 185.0,
+        "T_degC": 359.26,
+        "h_kJkg": 2488.85,
+        "note": "x = 1"
+      },
+      {
+        "id": "W4",
+        "node": "过热器出口（主蒸汽）",
+        "fluid": "蒸汽",
+        "m_kgs": 479.913,
+        "p_bar": 166.7,
+        "T_degC": 538.0,
+        "h_kJkg": 3398.89,
+        "note": ""
+      },
+      {
+        "id": "W5",
+        "node": "冷再热（再热器进口）",
+        "fluid": "蒸汽",
+        "m_kgs": 401.039,
+        "p_bar": 36.0,
+        "T_degC": 314.94,
+        "h_kJkg": 3014.61,
+        "note": ""
+      },
+      {
+        "id": "W6",
+        "node": "热再热（再热器出口）",
+        "fluid": "蒸汽",
+        "m_kgs": 401.039,
+        "p_bar": 32.004,
+        "T_degC": 538.0,
+        "h_kJkg": 3540.72,
+        "note": ""
+      }
+    ],
+    "comparison": [
+      {
+        "item": "毛电（发电机端）",
+        "coal": "589.84",
+        "c2n": "589.84",
+        "unit": "MW"
+      },
+      {
+        "item": "− 汽轮机岛辅机",
+        "coal": "26.50",
+        "c2n": "26.50",
+        "unit": "MW"
+      },
+      {
+        "item": "− 煤粉炉辅机",
+        "coal": "12.00",
+        "c2n": "0.00",
+        "unit": "MW"
+      },
+      {
+        "item": "− 氦风机 + 盐泵",
+        "coal": "0.00",
+        "c2n": "31.70",
+        "unit": "MW"
+      },
+      {
+        "item": "净电",
+        "coal": "551.34",
+        "c2n": "531.64",
+        "unit": "MW"
+      },
+      {
+        "item": "净电变化",
+        "coal": "—",
+        "c2n": "-19.70",
+        "unit": "MW"
+      }
+    ],
+    "assumptions": [
+      "汽轮机本体按黑盒处理：只取四台换热器的汽水参数作为边界，不校验通流能力、末级湿度与胀差",
+      "变工况为估算（滑压 + 级组效率修正 + 给水温度表），不是逐点通流计算"
+    ],
+    "checks_text": [
+      {
+        "name": "四台换热器最小端差（沿程）",
+        "value": "5.00 K @ 省煤器",
+        "criterion": "≥ 5.0 K",
+        "ok": true
+      },
+      {
+        "name": "冷盐与凝固点裕量",
+        "value": "65.2 K",
+        "criterion": "≥ 20.0 K（即 ≥ 258 °C）",
+        "ok": true
+      },
+      {
+        "name": "热盐分解温度",
+        "value": "565 °C",
+        "criterion": "≤ 600 °C（太阳盐）",
+        "ok": true
+      },
+      {
+        "name": "IHX 冷端温差",
+        "value": "36.8 K",
+        "criterion": "≥ 5.0 K",
+        "ok": true
+      },
+      {
+        "name": "各换热段沿程温差",
+        "value": "全部为正",
+        "criterion": "无温度交叉",
+        "ok": true
+      },
+      {
+        "name": "100 % 工况热平衡",
+        "value": "1029.96 = 1266.39 -236.43",
+        "criterion": "IHX = 汽侧吸热 + 储罐放热",
+        "ok": true
+      },
+      {
+        "name": "净电为正",
+        "value": "531.64 MW",
+        "criterion": "> 0",
+        "ok": true
+      }
+    ]
+  }
+}

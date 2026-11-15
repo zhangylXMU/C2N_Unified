@@ -1,0 +1,116 @@
+{
+  "schema_version": "1.0",
+  "case_id": "demo-600mw-subcritical-htgr",
+  "mode": "boiler_replacement",
+  "options": [
+    {
+      "option_id": "htgr-solar-salt-4mod",
+      "label": "高温气冷堆 + 太阳盐 + 4 模块",
+      "reactor": { "technology": "HTGR", "vendor_model": "HTR-PM", "n_modules": 4 },
+      "intermediate_loop": { "fluid": "solar_salt", "t_hot_c": 565.0, "t_cold_c": 303.114 },
+      "feasibility": { "status": "feasible", "code": "OK", "blocking_issues": [], "warnings": [] },
+      "sizing": {
+        "n_modules": 4,
+        "module_power_mwth": 250.0,
+        "q_core_mwth": 1000.0,
+        "q_ihx_mw": 1029.956,
+        "salt": {
+          "fluid": "solar_salt",
+          "mass_t": 8561.996,
+          "volume_m3": 9460.162,
+          "m_discharge_kgs": 3185.973,
+          "m_charge_kgs": 2591.39,
+          "t_hot_c": 565.0,
+          "t_cold_c": 303.114,
+          "min_pinch_k": 4.9999,
+          "binding_section": "再热器"
+        },
+        "storage": {
+          "capacity_mwh": 945.276,
+          "hours": 4.0,
+          "mode": "discharging",
+          "net_power_mw": -236.319
+        },
+        "hx": [
+          { "id": "SH", "q_mw": 436.739, "ka_mw_k": 5.6188, "area_m2": 5618.83, "u_w_m2k": 1000.0, "dt_min_k": 27.0, "dt_hot_end_k": 27.0, "dt_cold_end_k": 96.816, "lmtd_k": 77.728 },
+          { "id": "EV", "q_mw": 380.954, "ka_mw_k": 14.2297, "area_m2": 7114.83, "u_w_m2k": 2000.0, "dt_min_k": 5.697, "dt_hot_end_k": 96.816, "dt_cold_end_k": 5.697, "lmtd_k": 26.772 },
+          { "id": "EC", "q_mw": 237.595, "ka_mw_k": 27.0032, "area_m2": 20771.67, "u_w_m2k": 1300.0, "dt_min_k": 5.03, "dt_hot_end_k": 5.697, "dt_cold_end_k": 25.885, "lmtd_k": 8.799 },
+          { "id": "RH", "q_mw": 210.987, "ka_mw_k": 13.0265, "area_m2": 13026.46, "u_w_m2k": 1000.0, "dt_min_k": 4.9999, "dt_hot_end_k": 27.0, "dt_cold_end_k": 4.9999, "lmtd_k": 16.197 },
+          { "id": "IHX", "q_mw": 1029.956, "ka_mw_k": 11.2886, "area_m2": 14110.71, "u_w_m2k": 800.0, "dt_min_k": 36.886, "dt_hot_end_k": 185.0, "dt_cold_end_k": 36.886, "lmtd_k": 91.239 }
+        ]
+      },
+      "performance": {
+        "gross_mw": 589.84,
+        "net_mw": 558.136,
+        "aux_circulator_mw": 30.883,
+        "aux_salt_pump_mw": 0.821,
+        "aux_turbine_island_mw": 0.0,
+        "net_power_delta_mw": -31.704,
+        "eta_cycle_pct": 44.077,
+        "eta_primary_pct": 45.145,
+        "sustainable_load_pct": 81.337,
+        "self_sufficient_modules": 5
+      },
+      "checks": [
+        { "id": "pinch", "value": 5.0, "limit": 5.0, "unit": "K", "ok": true, "message": "四台换热器沿程最小端差" },
+        { "id": "freeze_margin", "value": 65.1, "limit": 20.0, "unit": "K", "ok": true },
+        { "id": "salt_decomposition", "value": 565.0, "limit": 600.0, "unit": "degC", "ok": true },
+        { "id": "energy_closure", "value": 0.0, "limit": 0.1, "unit": "%", "ok": true },
+        { "id": "net_power_positive", "value": 558.136, "limit": 0.0, "unit": "MW", "ok": true }
+      ],
+      "narrative": {
+        "headline": "4 模块可覆盖 600 MW 亚临界机组满负荷 4 小时，之后可持续负荷 81.3%",
+        "details": [
+          "储热 945 MWh，太阳盐 8562 t",
+          "净电 558.1 MW，较燃煤同口径减少 31.7 MW"
+        ]
+      },
+      "provenance": {
+        "kernel": "c2n-screening",
+        "kernel_version": "1.2.0",
+        "model_card_id": "MC-C2N-002",
+        "input_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+        "computed_at": "2026-11-10T09:00:03+08:00",
+        "runtime_ms": 1180
+      }
+    },
+    {
+      "option_id": "pwr-on-subcritical-turbine",
+      "label": "压水堆（华龙一号级）直接替代锅炉",
+      "reactor": { "technology": "PWR", "vendor_model": "HPR1000", "n_modules": null },
+      "feasibility": {
+        "status": "infeasible",
+        "code": "PRESSURE_MISMATCH",
+        "blocking_issues": [
+          "二回路饱和蒸汽 6.8 MPa / 283 degC，与既有汽轮机 16.7 MPa / 538 degC 双重失配",
+          "同流量比功由约 1650 kJ/kg 降至约 740 kJ/kg"
+        ],
+        "warnings": [
+          "可转为完全替代（新建汽轮机）",
+          "可考虑部分替代：核蒸汽加热给水，替代 1-3 号高加抽汽"
+        ],
+        "quantified": {
+          "pressure_ratio_required_over_available": 2.45,
+          "temperature_gap_k": 255.0,
+          "specific_work_retention_pct": 44.8
+        }
+      },
+      "sizing": null,
+      "performance": null,
+      "checks": [],
+      "narrative": {
+        "headline": "压水堆不适合锅炉替代，建议转完全替代或部分替代"
+      }
+    }
+  ],
+  "recommendation": null,
+  "warnings": ["储热 4 h 后放空，可持续负荷 81.34%"],
+  "provenance": {
+    "kernel": "c2n-screening",
+    "kernel_version": "1.2.0",
+    "model_card_id": "MC-C2N-002",
+    "input_hash": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+    "computed_at": "2026-11-10T09:00:03+08:00",
+    "runtime_ms": 1180
+  }
+}

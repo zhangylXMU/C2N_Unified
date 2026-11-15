@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2n.dev/schemas/1.0/economics.schema.json",
+  "title": "Economics contracts",
+  "description": "EconomicsInput is a read-only projection of one TechnicalAssessment option plus financial assumptions. The economics kernel depends on this schema and on nothing else from the technical side.",
+  "type": "object",
+  "$defs": {
+    "TechnicalProjection": {
+      "type": "object",
+      "description": "Every field here must have a documented source in TechnicalAssessment. Adding a field requires a contract review, not a kernel change.",
+      "required": ["net_mw", "q_core_mwth", "n_modules"],
+      "additionalProperties": false,
+      "properties": {
+        "net_mw": { "type": "number", "description": "performance.net_mw" },
+        "gross_mw": { "type": "number", "description": "performance.gross_mw" },
+        "q_core_mwth": { "type": "number", "description": "sizing.q_core_mwth" },
+        "n_modules": { "type": "integer", "minimum": 1, "description": "sizing.n_modules" },
+        "module_power_mwth": { "type": "number", "description": "sizing.module_power_mwth" },
+        "hx_areas_m2": {
+          "type": "object",
+          "description": "sizing.hx[].area_m2, keyed by section id (SH/EV/EC/RH/IHX).",
+          "additionalProperties": { "type": "number", "minimum": 0 }
+        },
+        "salt_mass_t": { "type": "number", "description": "sizing.salt.mass_t" },
+        "salt_volume_m3": { "type": "number", "description": "sizing.salt.volume_m3" },
+        "storage_capacity_mwh": { "type": "number", "description": "sizing.storage.capacity_mwh" },
+        "replacement_ratio": { "type": "number", "description": "partial_replacement: fraction of heat from nuclear." },
+        "eta_cycle_pct": { "type": "number", "description": "performance.eta_cycle_pct" },
+        "feasibility_status": {
+          "type": "string",
+          "enum": ["feasible", "marginal", "infeasible", "not_applicable"]
+        }
+      }
+    },
+    "EconomicsInput": {
+      "type": "object",
+      "required": ["schema_version", "option_id", "technical", "assumptions"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "option_id": { "type": "string" },
+        "case_id": { "type": "string" },
+        "technical": { "$ref": "#/$defs/TechnicalProjection" },
+        "assumptions": { "$ref": "common.schema.json#/$defs/Assumptions" }
+      }
+    },
+    "Annual": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "hours_per_year": { "type": "number" },
+        "generation_gwh": { "type": "number" },
+        "revenue_cny": { "type": "number" },
+        "fuel_cost_cny": { "type": "number" },
+        "om_cost_cny": { "type": "number" },
+        "co2_revenue_cny": { "type": "number" },
+        "net_cashflow_cny": { "type": "number" }
+      }
+    },
+    "Metrics": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "lcoe_cny_per_mwh": { "type": "number" },
+        "payback_years": { "type": "number" },
+        "irr_pct": { "type": "number" },
+        "npv_cny": { "type": "number" },
+        "breakeven_price_cny_per_mwh": { "type": "number" },
+        "coal_benchmark_lcoe_cny_per_mwh": { "type": "number", "description": "The 'keep burning coal' counterfactual." }
+      }
+    },
+    "Sensitivity": {
+      "type": "object",
+      "required": ["parameter"],
+      "additionalProperties": false,
+      "properties": {
+        "parameter": { "type": "string" },
+        "low": { "type": "number" },
+        "high": { "type": "number" },
+        "lcoe_low": { "type": "number" },
+        "lcoe_high": { "type": "number" },
+        "unit": { "type": "string" }
+      }
+    },
+    "Capex": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "overnight_cny": { "type": "number" },
+        "total_investment_cny": { "type": "number", "description": "Includes interest during construction." },
+        "cny_per_kw": { "type": "number" },
+        "breakdown": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/CostItem" } }
+      }
+    },
+    "EconomicsResult": {
+      "type": "object",
+      "required": ["schema_version", "option_id", "capex", "metrics", "provenance"],
+      "additionalProperties": false,
+      "properties": {
+        "schema_version": { "const": "1.0" },
+        "option_id": { "type": "string" },
+        "case_id": { "type": "string" },
+        "capex": { "$ref": "#/$defs/Capex" },
+        "annual": { "$ref": "#/$defs/Annual" },
+        "metrics": { "$ref": "#/$defs/Metrics" },
+        "sensitivity": { "type": "array", "items": { "$ref": "#/$defs/Sensitivity" } },
+        "confidence": {
+          "type": "string",
+          "enum": ["indicative", "study", "budget"],
+          "description": "indicative = order-of-magnitude only; study = derived from cost model; budget = supplier quotes."
+        },
+        "cost_model_id": { "type": "string", "examples": ["CN-2026-v1"] },
+        "disclaimer": { "type": "string" },
+        "provenance": { "$ref": "common.schema.json#/$defs/Provenance" }
+      }
+    }
+  }
+}

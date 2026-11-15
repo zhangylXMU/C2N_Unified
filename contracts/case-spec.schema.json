@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2n.dev/schemas/1.0/case-spec.schema.json",
+  "title": "CaseSpec",
+  "description": "Everything the user supplies. This is the only object the API accepts; the kernel never reads files or databases.",
+  "type": "object",
+  "required": ["schema_version", "mode", "plant", "reactor"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "case_id": { "type": "string", "description": "Client-generated or server-assigned identifier." },
+    "mode": { "$ref": "common.schema.json#/$defs/Mode" },
+    "plant": { "$ref": "#/$defs/PlantSpec" },
+    "reactor": { "$ref": "#/$defs/ReactorChoice" },
+    "intermediate_loop": { "$ref": "#/$defs/IntermediateLoop" },
+    "constraints": { "$ref": "#/$defs/Constraints" },
+    "economics_assumptions": {
+      "oneOf": [{ "type": "null" }, { "$ref": "common.schema.json#/$defs/Assumptions" }],
+      "description": "null means technical-only assessment."
+    },
+    "metadata": { "$ref": "#/$defs/Metadata" }
+  },
+  "$defs": {
+    "PlantSpec": {
+      "type": "object",
+      "description": "The existing unit. For full_replacement the turbine is not reused, so only name/gross_power_mw are meaningful and steam may be omitted.",
+      "required": ["turbine_class", "gross_power_mw"],
+      "additionalProperties": false,
+      "properties": {
+        "turbine_class": { "$ref": "common.schema.json#/$defs/TurbineClass" },
+        "name": { "type": "string" },
+        "gross_power_mw": { "type": "number", "exclusiveMinimum": 0 },
+        "gross_basis": { "type": "string", "enum": ["generator", "shaft"] },
+        "steam": { "$ref": "#/$defs/SteamSideSpec" },
+        "aux": { "$ref": "#/$defs/AuxLoads" },
+        "efficiencies": { "$ref": "#/$defs/Efficiencies" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "turbine_class": { "const": "subcritical" } }, "required": ["turbine_class"] },
+          "then": {
+            "required": ["steam"],
+            "properties": { "steam": { "required": ["drum_p_bar"] } }
+          }
+        }
+      ]
+    },
+    "SteamSideSpec": {
+      "type": "object",
+      "description": "Turbine-side heat demand. Subcritical units carry a drum pressure; supercritical and ultra-supercritical units are once-through and carry no drum.",
+      "required": ["main_steam_p_bar", "main_steam_t_c", "main_steam_m_kgs"],
+      "additionalProperties": false,
+      "properties": {
+        "main_steam_p_bar": { "type": "number", "exclusiveMinimum": 0 },
+        "main_steam_t_c": { "type": "number" },
+        "main_steam_m_kgs": { "type": "number", "exclusiveMinimum": 0 },
+        "cold_reheat_p_bar": { "type": "number", "exclusiveMinimum": 0 },
+        "cold_reheat_t_c": { "type": "number" },
+        "reheat_m_kgs": { "type": "number", "exclusiveMinimum": 0 },
+        "reheater_pressure_ratio": { "type": "number", "exclusiveMinimum": 0.5, "exclusiveMaximum": 1.0 },
+        "hot_reheat_t_c": { "type": "number" },
+        "drum_p_bar": { "type": "number", "exclusiveMinimum": 0, "description": "Subcritical only. Absence implies once-through." },
+        "once_through": { "type": "boolean", "default": false },
+        "separator_p_bar": { "type": "number", "exclusiveMinimum": 0, "description": "Once-through only; optional start-up separator pressure." },
+        "section_split_rule": {
+          "type": "string",
+          "enum": ["enthalpy", "temperature", "heat_flux"],
+          "default": "enthalpy",
+          "description": "How the economiser / evaporator / superheater boundaries are placed when there is no drum. Documented in the model card; different rules change area by 10-20%."
+        },
+        "feedwater_p_bar": { "type": "number", "exclusiveMinimum": 0 },
+        "feedwater_t_c": { "type": "number" },
+        "economizer_subcooling_k": { "type": "number", "minimum": 0 },
+        "extra_sections": {
+          "type": "array",
+          "description": "Additional heat sections, e.g. a second reheater for double-reheat units.",
+          "items": { "$ref": "#/$defs/ExtraSection" }
+        }
+      },
+      "anyOf": [
+        { "required": ["drum_p_bar"] },
+        { "required": ["once_through"], "properties": { "once_through": { "const": true } } }
+      ]
+    },
+    "ExtraSection": {
+      "type": "object",
+      "required": ["id", "kind"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string" },
+        "kind": { "type": "string", "enum": ["economizer", "evaporator", "superheater", "reheater"] },
+        "p_bar": { "type": "number", "exclusiveMinimum": 0 },
+        "t_in_c": { "type": "number" },
+        "t_out_c": { "type": "number" },
+        "m_kgs": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "AuxLoads": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "turbine_island_aux_mw": { "type": "number", "minimum": 0 },
+        "boiler_aux_mw": { "type": "number", "minimum": 0, "description": "Coal-boiler auxiliaries removed after retrofit; only used for the same-basis net-power comparison." }
+      }
+    },
+    "Efficiencies": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "generator_eta": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 },
+        "mechanical_eta": { "type": "number", "exclusiveMinimum": 0, "maximum": 1 }
+      }
+    },
+    "ReactorChoice": {
+      "type": "object",
+      "required": ["technology"],
+      "additionalProperties": false,
+      "properties": {
+        "technology": { "$ref": "common.schema.json#/$defs/ReactorTechnology" },
+        "vendor_model": { "type": "string", "examples": ["HTR-PM", "HPR1000", "CAP1000", "CEFR-600"] },
+        "n_modules": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "description": "null lets the kernel solve for the minimum module count."
+        }
+      }
+    },
+    "IntermediateLoop": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fluid": { "$ref": "common.schema.json#/$defs/FluidId" },
+        "t_hot_c": { "type": "number" },
+        "storage_hours": { "type": "number", "minimum": 0 },
+        "storage_capacity_mwh": { "type": "number", "minimum": 0, "description": "Overrides storage_hours when > 0." },
+        "main_branch_fraction": { "type": "number", "exclusiveMinimum": 0, "exclusiveMaximum": 1 },
+        "u_superheater_w_m2k": { "type": "number", "exclusiveMinimum": 0 },
+        "u_evaporator_w_m2k": { "type": "number", "exclusiveMinimum": 0 },
+        "u_economizer_w_m2k": { "type": "number", "exclusiveMinimum": 0 },
+        "u_reheater_w_m2k": { "type": "number", "exclusiveMinimum": 0 },
+        "u_ihx_w_m2k": { "type": "number", "exclusiveMinimum": 0 }
+      }
+    },
+    "Constraints": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "min_pinch_k": { "type": "number", "exclusiveMinimum": 0, "default": 5.0 },
+        "freezing_margin_k": { "type": "number", "minimum": 0, "default": 20.0 },
+        "ua_margin": { "type": "number", "minimum": 1.0, "default": 1.0 },
+        "min_load_pct": { "type": "number", "minimum": 0, "maximum": 100 },
+        "replacement_ratio": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "partial_replacement only: fraction of steam-side heat supplied by nuclear."
+        }
+      }
+    },
+    "Metadata": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "client": { "type": "string" },
+        "author": { "type": "string" },
+        "created_at": { "type": "string", "format": "date-time" },
+        "note": { "type": "string" }
+      }
+    }
+  }
+}

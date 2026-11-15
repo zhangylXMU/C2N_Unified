@@ -1,0 +1,51 @@
+{
+  "schema_version": "1.0",
+  "case_id": "demo-600mw-subcritical-htgr",
+  "mode": "boiler_replacement",
+  "plant": {
+    "turbine_class": "subcritical",
+    "name": "600 MW 亚临界再热机组",
+    "gross_power_mw": 589.84,
+    "gross_basis": "generator",
+    "steam": {
+      "main_steam_p_bar": 166.7,
+      "main_steam_t_c": 538.0,
+      "main_steam_m_kgs": 479.913,
+      "cold_reheat_p_bar": 36.0,
+      "cold_reheat_t_c": 314.936,
+      "reheat_m_kgs": 401.039,
+      "reheater_pressure_ratio": 0.889,
+      "hot_reheat_t_c": 538.0,
+      "drum_p_bar": 185.0,
+      "feedwater_p_bar": 185.0,
+      "feedwater_t_c": 273.585,
+      "economizer_subcooling_k": 5.0
+    },
+    "aux": { "turbine_island_aux_mw": 0.0, "boiler_aux_mw": 0.0 },
+    "efficiencies": { "generator_eta": 0.988, "mechanical_eta": 0.995 }
+  },
+  "reactor": { "technology": "HTGR", "vendor_model": "HTR-PM", "n_modules": 4 },
+  "intermediate_loop": {
+    "fluid": "solar_salt",
+    "t_hot_c": 565.0,
+    "storage_hours": 4.0,
+    "main_branch_fraction": 0.825,
+    "u_superheater_w_m2k": 1000.0,
+    "u_evaporator_w_m2k": 2000.0,
+    "u_economizer_w_m2k": 1300.0,
+    "u_reheater_w_m2k": 1000.0,
+    "u_ihx_w_m2k": 800.0
+  },
+  "constraints": {
+    "min_pinch_k": 5.0,
+    "freezing_margin_k": 20.0,
+    "ua_margin": 1.0
+  },
+  "economics_assumptions": null,
+  "metadata": {
+    "client": "demo",
+    "author": "C2N team",
+    "created_at": "2026-11-10T09:00:00+08:00",
+    "note": "Golden case reproduced from C2N_CPP/results/summary.json"
+  }
+}

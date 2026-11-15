@@ -1,0 +1,181 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://c2n.dev/schemas/1.0/technical-result.schema.json",
+  "title": "TechnicalAssessment",
+  "description": "Output of any technical kernel. Always an array of options, even when there is only one, so that the UI and the economics layer have a single shape to handle.",
+  "type": "object",
+  "required": ["schema_version", "case_id", "mode", "options", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": { "const": "1.0" },
+    "case_id": { "type": "string" },
+    "mode": { "$ref": "common.schema.json#/$defs/Mode" },
+    "options": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/Option" } },
+    "recommendation": {
+      "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Recommendation" }],
+      "description": "Populated for full_replacement and partial_replacement; null for boiler_replacement."
+    },
+    "warnings": { "type": "array", "items": { "type": "string" } },
+    "provenance": { "$ref": "common.schema.json#/$defs/Provenance" }
+  },
+  "$defs": {
+    "Option": {
+      "type": "object",
+      "required": ["option_id", "reactor", "feasibility"],
+      "additionalProperties": false,
+      "properties": {
+        "option_id": { "type": "string" },
+        "label": { "type": "string" },
+        "reactor": { "$ref": "#/$defs/ReactorRef" },
+        "intermediate_loop": { "$ref": "#/$defs/LoopRef" },
+        "feasibility": { "$ref": "#/$defs/Feasibility" },
+        "sizing": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Sizing" }] },
+        "performance": { "oneOf": [{ "type": "null" }, { "$ref": "#/$defs/Performance" }] },
+        "checks": { "type": "array", "items": { "$ref": "common.schema.json#/$defs/Check" } },
+        "narrative": { "$ref": "#/$defs/Narrative" },
+        "provenance": { "$ref": "common.schema.json#/$defs/Provenance" }
+      }
+    },
+    "ReactorRef": {
+      "type": "object",
+      "required": ["technology"],
+      "additionalProperties": false,
+      "properties": {
+        "technology": { "$ref": "common.schema.json#/$defs/ReactorTechnology" },
+        "vendor_model": { "type": "string" },
+        "n_modules": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
+    "LoopRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fluid": { "$ref": "common.schema.json#/$defs/FluidId" },
+        "t_hot_c": { "type": "number" },
+        "t_cold_c": { "type": "number" }
+      }
+    },
+    "Feasibility": {
+      "type": "object",
+      "required": ["status", "code"],
+      "additionalProperties": false,
+      "properties": {
+        "status": { "type": "string", "enum": ["feasible", "marginal", "infeasible", "not_applicable"] },
+        "code": { "$ref": "common.schema.json#/$defs/FeasibilityCode" },
+        "blocking_issues": { "type": "array", "items": { "type": "string" } },
+        "warnings": { "type": "array", "items": { "type": "string" } },
+        "quantified": {
+          "type": "object",
+          "description": "Numbers behind an infeasible verdict, e.g. pressure ratio and specific-work loss for a PWR against a subcritical turbine.",
+          "additionalProperties": { "type": "number" }
+        }
+      }
+    },
+    "Sizing": {
+      "type": "object",
+      "required": ["n_modules", "q_core_mwth", "hx"],
+      "additionalProperties": false,
+      "properties": {
+        "n_modules": { "type": "integer", "minimum": 1 },
+        "module_power_mwth": { "type": "number", "exclusiveMinimum": 0 },
+        "q_core_mwth": { "type": "number", "exclusiveMinimum": 0 },
+        "q_ihx_mw": { "type": "number", "exclusiveMinimum": 0 },
+        "salt": { "$ref": "#/$defs/SaltSizing" },
+        "storage": { "$ref": "#/$defs/StorageSizing" },
+        "hx": { "type": "array", "minItems": 1, "items": { "$ref": "#/$defs/HxSection" } }
+      }
+    },
+    "SaltSizing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "fluid": { "$ref": "common.schema.json#/$defs/FluidId" },
+        "mass_t": { "type": "number", "minimum": 0 },
+        "volume_m3": { "type": "number", "minimum": 0 },
+        "m_discharge_kgs": { "type": "number", "minimum": 0 },
+        "m_charge_kgs": { "type": "number", "minimum": 0 },
+        "t_hot_c": { "type": "number" },
+        "t_cold_c": { "type": "number" },
+        "min_pinch_k": { "type": "number" },
+        "binding_section": { "type": "string", "description": "Which exchanger sets the minimum pinch." }
+      }
+    },
+    "StorageSizing": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "capacity_mwh": { "type": "number", "minimum": 0 },
+        "hours": { "type": "number", "minimum": 0 },
+        "mode": { "type": "string", "enum": ["charging", "discharging", "balanced"] },
+        "net_power_mw": { "type": "number", "description": "Positive = charging." }
+      }
+    },
+    "HxSection": {
+      "type": "object",
+      "required": ["id", "q_mw", "ka_mw_k"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "examples": ["SH", "EV", "EC", "RH", "IHX"] },
+        "q_mw": { "type": "number" },
+        "ka_mw_k": { "type": "number", "exclusiveMinimum": 0 },
+        "ka_selected_mw_k": { "type": "number", "exclusiveMinimum": 0 },
+        "area_m2": { "type": "number", "exclusiveMinimum": 0 },
+        "u_w_m2k": { "type": "number", "exclusiveMinimum": 0 },
+        "dt_min_k": { "type": "number" },
+        "dt_hot_end_k": { "type": "number" },
+        "dt_cold_end_k": { "type": "number" },
+        "lmtd_k": { "type": "number", "description": "Endpoint LMTD, reported for reference only; kA uses the integrated value." }
+      }
+    },
+    "Performance": {
+      "type": "object",
+      "required": ["net_mw"],
+      "additionalProperties": false,
+      "properties": {
+        "gross_mw": { "type": "number" },
+        "net_mw": { "type": "number" },
+        "aux_circulator_mw": { "type": "number" },
+        "aux_salt_pump_mw": { "type": "number" },
+        "aux_turbine_island_mw": { "type": "number" },
+        "net_power_delta_mw": { "type": "number", "description": "Same-basis change vs the coal unit." },
+        "eta_cycle_pct": { "type": "number", "description": "Net electric / steam-side heat absorption." },
+        "eta_primary_pct": { "type": "number", "description": "Net electric / (core power + storage discharge)." },
+        "sustainable_load_pct": { "type": "number", "description": "Load at which storage throughput is zero." },
+        "self_sufficient_modules": { "type": "integer", "minimum": 1 }
+      }
+    },
+    "Narrative": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "headline": { "type": "string" },
+        "details": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "Recommendation": {
+      "type": "object",
+      "required": ["ranking", "method"],
+      "additionalProperties": false,
+      "properties": {
+        "method": { "type": "string", "examples": ["mcda-weighted-sum"] },
+        "weights": {
+          "type": "object",
+          "additionalProperties": { "type": "number", "minimum": 0, "maximum": 1 }
+        },
+        "ranking": { "type": "array", "items": { "$ref": "#/$defs/RankedOption" } },
+        "notes": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "RankedOption": {
+      "type": "object",
+      "required": ["option_id", "rank", "score"],
+      "additionalProperties": false,
+      "properties": {
+        "option_id": { "type": "string" },
+        "rank": { "type": "integer", "minimum": 1 },
+        "score": { "type": "number" },
+        "top_drivers": { "type": "array", "items": { "type": "string" }, "description": "Why this option placed where it did; required for explainability." }
+      }
+    }
+  }
+}
