@@ -267,4 +267,4 @@ python tools/offline_selfcheck.py --fake     # 用替身物性验证装配（数
 
 ## 许可
 
-MIT © 2026 zhangylXMU，见 [LICENSE](LICENSE)。
+MIT © 2026 Dr. ZHANG Yaoli，见 [LICENSE](LICENSE)。

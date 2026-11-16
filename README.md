@@ -287,4 +287,4 @@ python tools/offline_selfcheck.py --fake     # plumbing only; numbers are not ph
 
 ## License
 
-MIT © 2026 zhangylXMU. See [LICENSE](LICENSE).
+MIT © 2026 Dr. ZHANG Yaoli. See [LICENSE](LICENSE).
